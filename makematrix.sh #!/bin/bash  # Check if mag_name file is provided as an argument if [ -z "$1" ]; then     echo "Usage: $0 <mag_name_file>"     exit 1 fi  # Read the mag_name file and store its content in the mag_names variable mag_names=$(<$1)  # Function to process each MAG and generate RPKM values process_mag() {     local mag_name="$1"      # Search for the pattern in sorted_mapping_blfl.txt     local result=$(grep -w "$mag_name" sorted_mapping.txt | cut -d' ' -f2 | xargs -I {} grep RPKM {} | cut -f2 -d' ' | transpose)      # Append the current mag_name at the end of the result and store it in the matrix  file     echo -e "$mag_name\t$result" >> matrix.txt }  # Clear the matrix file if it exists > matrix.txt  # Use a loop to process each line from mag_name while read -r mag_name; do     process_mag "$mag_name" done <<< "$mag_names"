@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Check if mag_name file is provided as an argument
+if [ -z "$1" ]; then
+    echo "Usage: $0 <mag_name_file>"
+    exit 1
+fi
+
+# Read the mag_name file and store its content in the mag_names variable
+mag_names=$(<$1)
+
+# Function to process each MAG and generate RPKM values
+process_mag() {
+    local mag_name="$1"
+
+    # Search for the pattern in sorted_mapping_blfl.txt
+    local result=$(grep -w "$mag_name" sorted_mapping.txt | cut -d' ' -f2 | xargs -I
+{} grep RPKM {} | cut -f2 -d' ' | transpose)
+
+    # Append the current mag_name at the end of the result and store it in the matrix
+ file
+    echo -e "$mag_name\t$result" >> matrix.txt
+}
+
+# Clear the matrix file if it exists
+> matrix.txt
+
+# Use a loop to process each line from mag_name
+while read -r mag_name; do
+    process_mag "$mag_name"
+done <<< "$mag_names"
